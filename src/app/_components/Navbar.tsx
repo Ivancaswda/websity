@@ -22,19 +22,19 @@ const Navbar = () => {
         <nav className="border-b bg-sidebar/50 backdrop-blur-sm sticky top-0 z-50">
             <div className="max-w-7xl mx-auto px-4 md:px-8 flex items-center justify-between h-16">
 
-                {/* --- LOGO --- */}
+
                 <Link href="/" className="flex items-center gap-2">
-                    <Image src="/logo.svg" alt="Buildify" width={28} height={28} />
-                    <span className="font-bold text-lg">Websity</span>
+                    <Image src="/logo.png" alt="Buildify" className='rounded-lg' width={48} height={48} />
+                    <span className="font-bold text-lg text-primary ">Websity</span>
                 </Link>
 
                 {/* --- NAVIGATION --- */}
                 <div className="hidden md:flex items-center gap-6">
-                    <Link href="/projects" className="text-sm text-muted-foreground hover:text-foreground transition">
-                        Проекты
+                    <Link href="/workspace" className="text-sm text-muted-foreground hover:text-foreground transition">
+                        Рабочая панель
                     </Link>
-                    <Link href="/templates" className="text-sm text-muted-foreground hover:text-foreground transition">
-                        Шаблоны
+                    <Link href="/profile" className="text-sm text-muted-foreground hover:text-foreground transition">
+                        Профиль
                     </Link>
                     <Link href="/pricing" className="text-sm text-muted-foreground hover:text-foreground transition">
                         Цены
@@ -48,7 +48,7 @@ const Navbar = () => {
                             <DropdownMenuTrigger asChild>
                                 <Button variant="ghost" size="icon" className="rounded-full">
                                     <Image
-                                        src={user.avatar || '/default-avatar.png'}
+                                        src={user.avatarUrl || '/default-avatar.png'}
                                         alt={user?.userName}
                                         width={32}
                                         height={32}
@@ -65,7 +65,7 @@ const Navbar = () => {
                                 </DropdownMenuLabel>
                                 <DropdownMenuSeparator />
                                 <DropdownMenuItem asChild>
-                                    <Link href="/account" className="flex items-center gap-2">
+                                    <Link href="/profile" className="flex items-center gap-2">
                                         <UserIcon size={16} /> Профиль
                                     </Link>
                                 </DropdownMenuItem>

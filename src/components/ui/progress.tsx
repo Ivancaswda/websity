@@ -2,29 +2,36 @@
 
 import * as React from "react"
 import * as ProgressPrimitive from "@radix-ui/react-progress"
-
 import { cn } from "@/lib/utils"
 
-function Progress({
-  className,
-  value,
-  ...props
-}: React.ComponentProps<typeof ProgressPrimitive.Root>) {
+interface ProgressProps extends React.ComponentProps<typeof ProgressPrimitive.Root> {
+  value: number
+  max?: number
+  label?: string
+}
+
+function Progress({ className, value = 0, max = 20, label, ...props }: ProgressProps) {
+  const percentage = Math.min((value / max) * 100, 100)
+
   return (
-    <ProgressPrimitive.Root
-      data-slot="progress"
-      className={cn(
-        "bg-primary/20 relative h-2 w-full overflow-hidden rounded-full",
-        className
-      )}
-      {...props}
-    >
-      <ProgressPrimitive.Indicator
-        data-slot="progress-indicator"
-        className="bg-primary h-full w-full flex-1 transition-all"
-        style={{ transform: `translateX(-${100 - (value || 0)}%)` }}
-      />
-    </ProgressPrimitive.Root>
+      <div className="w-full">
+        <div className="flex justify-between mb-1 text-sm font-medium text-gray-700">
+          <span>{label || "Осталось звезд"}</span>
+          <span>{value}/{max}</span>
+        </div>
+        <ProgressPrimitive.Root
+            className={cn(
+                "relative h-4 w-full overflow-hidden rounded-xl bg-gray-200",
+                className
+            )}
+            {...props}
+        >
+          <ProgressPrimitive.Indicator
+              className="h-full transition-all rounded-xl bg-gradient-to-r from-yellow-400 via-yellow-500 to-yellow-600"
+              style={{ transform: `translateX(-${100 - percentage}%)` }}
+          />
+        </ProgressPrimitive.Root>
+      </div>
   )
 }
 

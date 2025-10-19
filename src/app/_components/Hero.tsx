@@ -12,7 +12,13 @@ import axios from "axios"
 import { toast } from "sonner"
 import { v4 as uuidv4 } from "uuid"
 import { useRouter } from "next/navigation"
-import Servet from "@/app/_components/Servet";
+
+import {
+    Popover,
+    PopoverContent,
+    PopoverTrigger
+} from "@/components/ui/popover"
+import {useAuth} from "@/context/useAuth";
 
 const formSchema = z.object({
     value: z.string().min(1, { message: 'value is required' }).max(10000, { message: 'Value is too long' }),
@@ -22,7 +28,8 @@ const Hero = () => {
     const [isFocused, setIsFocused] = useState(false)
     const [isPending, setIsPending] = useState(false)
     const [userInput, setUserInput] = useState('')
-
+    const [showNoCredits, setShowNoCredits] = useState(false)
+    const {user} = useAuth()
     const router = useRouter()
 
     const form = useForm<z.infer<typeof formSchema>>({
@@ -30,34 +37,43 @@ const Hero = () => {
         defaultValues: { value: "" },
     })
 
-    // ✅ обработчик выбора шаблона
+
     const onSelect = (value: string) => {
         setUserInput(value)
-        form.setValue('value', value) // чтобы значение появлялось и в форме
+        form.setValue('value', value)
     }
-
 
     const createNewProject = async () => {
         if (!userInput.trim()) {
             toast.error("Введите или выберите запрос")
             return
         }
-        console.log('userInput===')
-        console.log(userInput)
-
-
-        const projectId = uuidv4()
-        const frameId = generateRandomFrameNumber()
-        const messages = [{ role: 'user', content: userInput }]
 
         setIsPending(true)
+
         try {
-            const result = await axios.post('/api/projects', { projectId, frameId, messages })
-            console.log(result)
+
+
+
+            if (user?.credits <= 0) {
+                setShowNoCredits(true)
+                setIsPending(false)
+                return
+            }
+
+            const projectId = uuidv4()
+            const frameId = generateRandomFrameNumber()
+            const messages = [{ role: 'user', content: userInput }]
+
+            await axios.post('/api/projects', { projectId, frameId, messages })
             toast.success('Проект создан!')
             router.push(`/playground/${projectId}?frameId=${frameId}`)
-        } catch (error) {
-            toast.error('Не удалось создать проект')
+        } catch (error: any) {
+            if (error.response?.status === 403) {
+                setShowNoCredits(true)
+            } else {
+                toast.error(error?.response?.data?.error || 'Не удалось создать проект')
+            }
             console.error(error)
         } finally {
             setIsPending(false)
@@ -65,10 +81,9 @@ const Hero = () => {
     }
 
     return (
-        <section className="space-y-6  py-[16vh] 2xl:py-48 mx-auto">
-
+        <section className="space-y-6 py-[16vh] 2xl:py-48 mx-auto">
             <h1 className="text-2xl md:text-5xl font-bold text-center">
-               Сайты стало создавать проще с помощью <span className="text-primary">Websity</span>
+                Сайты стало создавать проще с помощью <span className="text-primary">Websity</span>
             </h1>
             <p className="text-lg md:text-xl text-muted-foreground text-center">
                 Проектируйте сайты за секунды, используя новейшие технологии ИИ
@@ -78,10 +93,7 @@ const Hero = () => {
                 <Form {...form}>
                     <section className="space-y-6">
                         <form
-                            onSubmit={(e) => {
-                                e.preventDefault()
-                                createNewProject()
-                            }}
+                            onSubmit={(e) => { e.preventDefault(); createNewProject() }}
                             className={cn(
                                 'relative border p-4 pt-1 rounded-xl bg-sidebar dark:bg-sidebar transition-all',
                                 isFocused && "shadow-xs"
@@ -104,9 +116,13 @@ const Hero = () => {
                                         className="pt-4 resize-none border-none w-full outline-none bg-transparent"
                                         placeholder="Какой сайт вы бы хотели увидеть"
                                         onKeyDown={(e) => {
-                                            if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) {
+                                            if (e.key === 'Enter' && !e.shiftKey) {
                                                 e.preventDefault()
-                                                createNewProject()
+                                                if (user?.credits <= 0) {
+                                                    setShowNoCredits(true)
+                                                } else {
+                                                    createNewProject()
+                                                }
                                             }
                                         }}
                                     />
@@ -121,21 +137,36 @@ const Hero = () => {
                                     для отправки
                                 </div>
 
-                                <Button
-                                    type="submit"
-                                    onClick={createNewProject}
-                                    disabled={isPending}
-                                    className={cn('size-8 rounded-full', isPending && 'bg-muted-foreground border')}
-                                >
-                                    {isPending ? (
-                                        <Loader2Icon className="size-4 animate-spin" />
-                                    ) : (
-                                        <ArrowUpIcon />
-                                    )}
-                                </Button>
+                                <Popover open={showNoCredits} onOpenChange={setShowNoCredits}>
+
+                                    <Button
+                                        type="submit"
+                                        onClick={(e) => {
+                                            e.preventDefault();
+                                            if (user?.credits <= 0) {
+                                                // Только если нет кредитов — показать поповер
+                                                setShowNoCredits(true);
+                                            } else {
+                                                createNewProject();
+                                            }
+                                        }}
+                                        disabled={isPending}
+                                        className={cn('size-8 rounded-full', isPending && 'bg-muted-foreground border')}
+                                    >
+                                        {isPending ? <Loader2Icon className="size-4 animate-spin" /> : <ArrowUpIcon />}
+                                    </Button>
+
+                                    <PopoverContent className="w-64">
+                                        <p className="text-sm text-center text-red-600 mb-2">
+                                            Недостаточно звезд для создания проекта!
+                                        </p>
+                                        <Button className="w-full" onClick={() => router.push('/pricing')}>
+                                            Купить звезды
+                                        </Button>
+                                    </PopoverContent>
+                                </Popover>
                             </div>
                         </form>
-
 
                         <div className="flex-wrap justify-center gap-2 hidden md:flex max-w-3xl">
                             {[

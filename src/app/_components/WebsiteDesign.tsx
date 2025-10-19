@@ -84,23 +84,23 @@ const WebsiteDesign = ({ generatedCode }: Props) => {
                     allElements.forEach((el) => {
                         el.style.outline = '';
                         el.style.cursor = ''
-
-                    })
+                    });
 
                     const html =  cloneDoc.outerHTML;
-                    console.log(html)
 
-                    const result = await axios.put('/api/frames', {
+                     await axios.put('/api/frames', {
                         designCode: html,
                         frameId,
                         projectId
-                    })
-                    console.log(result.data)
-                    toast.success('Вебсайт Сохранен!')
+                    });
+
+                    toast.success('Вебсайт Сохранен!');
+
+
 
                 }
             } catch (error) {
-            toast.error('Не удалось сохранить код!')
+                toast.error('Не удалось сохранить код!');
             }
         }
     }

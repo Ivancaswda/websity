@@ -14,6 +14,7 @@ import { FaGithub, FaGoogle } from 'react-icons/fa'
 import { motion } from 'framer-motion'
 import Image from 'next/image'
 import {Button} from "@/components/ui/button";
+import GoogleButton from "@/app/(auth)/GoogleButton";
 function SignUp() {
     const { user, setUser, loading } = useAuth()
     const router = useRouter()
@@ -119,21 +120,13 @@ function SignUp() {
 
                 {/* Социальные кнопки */}
                 <div className="flex flex-col space-y-3">
-                    <SocialButton handleProvider={handleGoogleSignIn} icon={<FaGoogle/>} text="Зарегистрироваться через Google"/>
+                    <GoogleButton/>
                 </div>
             </div>
         </div>
     )
 }
 
-const SocialButton = ({icon, text, handleProvider}: {icon: React.ReactNode, text: string, handleProvider:any}) => (
-    <button onClick={handleProvider}
-            className="flex items-center gap-3 rounded-lg border border-gray-200 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm transition hover:bg-gray-50 dark:bg-zinc-800 dark:text-gray-200"
-            type="button"
-    >
-        {icon} {text}
-    </button>
-)
 
 const LabelInputContainer = ({children, className}: {children: React.ReactNode, className?: string}) => (
     <div className={cn("flex w-full flex-col space-y-2", className)}>

@@ -12,6 +12,7 @@ import { cn } from '@/lib/utils'
 import { Loader2Icon } from 'lucide-react'
 import { FaGithub, FaGoogle } from 'react-icons/fa'
 import Image from "next/image";
+import GoogleButton from "@/app/(auth)/GoogleButton";
 function SignIn() {
     const { user, setUser } = useAuth()
     const router = useRouter()
@@ -35,7 +36,7 @@ function SignIn() {
             const userData = await userRes.json()
             setUser(userData.user)
             toast.success('Добро пожаловать обратно 👋')
-            router.replace('/dashboard')
+            router.replace('/workspace')
         } catch (err: any) {
             toast.error('Ошибка входа. Проверьте данные.')
         } finally {
@@ -44,7 +45,7 @@ function SignIn() {
     }
 
     useEffect(() => {
-        if (user) router.replace('/dashboard')
+        if (user) router.replace('/workspace')
     }, [user, router])
     const handleGoogleSignIn = async () => {
 
@@ -91,25 +92,15 @@ function SignIn() {
 
                 <div className="my-6 h-px w-full bg-gradient-to-r from-transparent via-gray-300 to-transparent"/>
 
-                {/* Социальные кнопки */}
+
                 <div className="flex flex-col space-y-3">
-                    <SocialButton handleProvider={handleGoogleSignIn} icon={<FaGoogle/>} text="Войти через Google"/>
+                    <GoogleButton/>
                 </div>
             </div>
         </div>
     );
 }
 
-const BottomGradient = () => {
-    return (
-        <>
-            <span
-                className="absolute inset-x-0 -bottom-px block h-px w-full bg-gradient-to-r from-transparent via-orange-500 to-transparent opacity-0 transition duration-500 group-hover/btn:opacity-100"/>
-            <span
-                className="absolute inset-x-10 -bottom-px mx-auto block h-px w-1/2 bg-gradient-to-r from-transparent via-red-500 to-transparent opacity-0 blur-sm transition duration-500 group-hover/btn:opacity-100"/>
-        </>
-    );
-};
 
 const SocialButton = ({icon, text, handleProvider}: {icon: React.ReactNode, text: string, handleProvider:any}) => (
     <button onClick={handleProvider}

@@ -4,6 +4,7 @@ import React from 'react'
 import { SidebarProvider } from "@/components/ui/sidebar"
 import WorkspaceSidebar from "@/app/_components/WorkspaceSidebar"
 import WorkspaceHeader from "@/app/_components/WorkspaceHeader"
+import Footer from "@/app/_components/Footer";
 
 const WorkspaceLayout = ({ children }: any) => {
     return (
@@ -21,6 +22,7 @@ const WorkspaceLayout = ({ children }: any) => {
                 >
                     <WorkspaceHeader />
                     <div className="flex-1 overflow-y-auto">{children}</div>
+
                 </main>
             </div>
         </SidebarProvider>

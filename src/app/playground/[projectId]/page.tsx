@@ -61,10 +61,17 @@ const PlaygroundPage = () => {
 
 
     const sendMessage = async (userInput: string) => {
+        if (!userInput.trim()) return
+
         setLoading(true)
         setMessages((prev) => [...prev, { role: "user", content: userInput }])
-        let text = '';
+
         try {
+
+            const creditRes = await axios.post('/api/use-credit');
+            toast.success(`1 звезда использована! Осталось: ${creditRes.data.credits}`);
+
+
             const response = await fetch("/api/ai-model", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
@@ -75,22 +82,25 @@ const PlaygroundPage = () => {
                             content: PROMPT.replace("{userInput}", userInput),
                         },
                     ],
+                    frameId: frameId
                 }),
-            })
+            });
 
-            const data = await response.json()
-             text = data.content || ""
+            const data = await response.json();
+            const text = data.content || "";
 
-            let isCode = false
-            let extractedCode = ""
-            await saveGeneratedCode(text)
+            let isCode = false;
+            let extractedCode = "";
+
             if (text.includes("```html")) {
-                isCode = true
-                const start = text.indexOf("```html") + 7
-                const end = text.lastIndexOf("```")
-                extractedCode = text.slice(start, end).trim()
-                setGeneratedCode(extractedCode)
+                isCode = true;
+                const start = text.indexOf("```html") + 7;
+                const end = text.lastIndexOf("```");
+                extractedCode = text.slice(start, end).trim();
+                setGeneratedCode(extractedCode);
             }
+
+            await saveGeneratedCode(text);
 
             setMessages((prev) => [
                 ...prev,
@@ -98,17 +108,21 @@ const PlaygroundPage = () => {
                     role: "assistant",
                     content: isCode ? "✅ Код успешно сгенерирован!" : text,
                 },
-            ])
-        } catch (err) {
-            console.error(err)
+            ]);
+
+        } catch (err: any) {
+            console.error(err);
+
+            toast.error(err?.response?.data?.error || "Ошибка при генерации");
             setMessages((prev) => [
                 ...prev,
                 { role: "assistant", content: "⚠️ Ошибка при генерации кода" },
-            ])
+            ]);
+        } finally {
+            setLoading(false);
         }
+    };
 
-        setLoading(false)
-    }
     console.log(loading)
 
     useEffect(() => {

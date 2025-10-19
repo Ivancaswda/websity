@@ -7,7 +7,7 @@ export async function PUT(req:NextRequest) {
 
     const {messages, frameId} = await req.json()
 
-    const result = await db.update(chatTable).set({
+     await db.update(chatTable).set({
         chatMessages: messages
     }).where(eq(chatTable.frameId, frameId));
 

@@ -67,17 +67,18 @@ const WorkspaceSidebar = () => {
 
     return (
         <Sidebar >
-            <SidebarHeader className='p-5' >
+            <SidebarHeader className='px-5 py-2' >
 
-                <div className='flex items-center gap-2'>
-                    <Image src='/logo.png' alt='websity' width={42} height={35}/>
-
+                <div className='flex items-center gap-2 mb-4'>
+                    <Link href='/workspace' >
+                        <Image src='/logo.png' alt='websity' className='rounded-lg' width={52} height={45}/>
+                    </Link>
                 </div>
-                <Link href='/workspace'>
-                    <Button className='w-full'>
+
+                    <Button  className='w-full'>
                         + Добавить проект
                     </Button>
-                </Link>
+
 
             </SidebarHeader>
             <SidebarContent>
@@ -120,57 +121,59 @@ const WorkspaceSidebar = () => {
 
 
             </SidebarContent>
-            <SidebarFooter >
-                    <div className='p-3 border rounded-xl flex-col flex gap-4  space-y-3 bg-secondary'>
-                        <h2 className='flex justify-between items-center'>Оставшийся попытки: <span>{user?.credits}</span></h2>
-                        <Progress value={33}/>
-                        <div className='flex items-center gap-3'>
+            <SidebarFooter>
+                <div className="p-3 border rounded-xl flex-col flex gap-4 bg-secondary">
+                    <Progress
+                        value={user?.credits || 0}
+                        max={21}
+                        label="Оставшиеся звезды"
+                    />
 
-                            <DropdownMenu>
-                                <DropdownMenuTrigger asChild>
-                                    <Button variant="ghost" size="icon" className="rounded-full">
 
-                                        <Avatar>
-                                            <AvatarImage src={user?.avatar}/>
-                                            <AvatarFallback className='bg-primary text-white cursor-pointer '>
-                                                {user?.userName[0].toUpperCase()}
-                                            </AvatarFallback>
-                                        </Avatar>
-                                    </Button>
-                                </DropdownMenuTrigger>
-                                <DropdownMenuContent align="end" className="w-56">
-                                    <DropdownMenuLabel>
-                                        <div className="flex flex-col">
-                                            <span className="font-medium">{user?.userName}</span>
-                                            <span className="text-xs text-muted-foreground">{user?.email}</span>
-                                        </div>
-                                    </DropdownMenuLabel>
-                                    <DropdownMenuSeparator />
-                                    <DropdownMenuItem asChild>
-                                        <Link href="/account" className="flex items-center gap-2">
-                                            <UserIcon size={16} /> Профиль
-                                        </Link>
-                                    </DropdownMenuItem>
-                                    <DropdownMenuSeparator />
-                                    <DropdownMenuItem
-                                        onClick={() => logout()}
-                                        className="text-red-600 flex items-center gap-2"
-                                    >
-                                        <LogOutIcon size={16} /> Выйти
-                                    </DropdownMenuItem>
-                                </DropdownMenuContent>
-                            </DropdownMenu>
-                            <Link href='/pricing' >
-                                <Button className='w-full' >
-
-                                    <FaCrown/>
-                                    Обновить план
+                    <div className="flex items-center gap-3 mt-2">
+                        <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                                <Button variant="ghost" size="icon" className="rounded-full">
+                                    <Avatar>
+                                        <AvatarImage src={user?.avatar}/>
+                                        <AvatarFallback className='bg-primary text-white cursor-pointer'>
+                                            {user?.userName[0].toUpperCase()}
+                                        </AvatarFallback>
+                                    </Avatar>
                                 </Button>
-                            </Link>
-                        </div>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent align="end" className="w-56">
+                                <DropdownMenuLabel>
+                                    <div className="flex flex-col">
+                                        <span className="font-medium">{user?.userName}</span>
+                                        <span className="text-xs text-muted-foreground">{user?.email}</span>
+                                    </div>
+                                </DropdownMenuLabel>
+                                <DropdownMenuSeparator />
+                                <DropdownMenuItem asChild>
+                                    <Link href="/profile" className="flex items-center gap-2">
+                                        <UserIcon size={16} /> Профиль
+                                    </Link>
+                                </DropdownMenuItem>
+                                <DropdownMenuSeparator />
+                                <DropdownMenuItem
+                                    onClick={() => logout()}
+                                    className="text-red-600 flex items-center gap-2"
+                                >
+                                    <LogOutIcon size={16} /> Выйти
+                                </DropdownMenuItem>
+                            </DropdownMenuContent>
+                        </DropdownMenu>
 
+                        <Link href='/pricing'>
+                            <Button className='w-full flex items-center gap-2'>
+                                <FaCrown/> Купить звезды
+                            </Button>
+                        </Link>
                     </div>
+                </div>
             </SidebarFooter>
+
         </Sidebar>
     )
 }

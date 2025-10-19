@@ -24,7 +24,7 @@ const WorkspaceHeader = () => {
                     <Button variant="ghost" size="icon" className="rounded-full">
 
                         <Avatar>
-                            <AvatarImage src={user?.avatar}/>
+                            <AvatarImage src={user?.avatarUrl}/>
                             <AvatarFallback className='bg-primary text-white cursor-pointer '>
                                 {user?.userName[0].toUpperCase()}
                             </AvatarFallback>
@@ -40,7 +40,7 @@ const WorkspaceHeader = () => {
                     </DropdownMenuLabel>
                     <DropdownMenuSeparator />
                     <DropdownMenuItem asChild>
-                        <Link href="/account" className="flex items-center gap-2">
+                        <Link href="/profile" className="flex items-center gap-2">
                             <UserIcon size={16} /> Профиль
                         </Link>
                     </DropdownMenuItem>
