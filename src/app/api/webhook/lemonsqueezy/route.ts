@@ -18,29 +18,46 @@ export async function POST(req: NextRequest) {
         const status = event?.data?.attributes?.status;
         const eventName = event?.meta?.event_name;
         const productId =
-            event?.data?.attributes?.first_order_item?.product_id ||
-            event?.data?.attributes?.order_items?.[0]?.product_id;
+            String(
+                event?.data?.attributes?.first_order_item?.product_id ||
+                event?.data?.attributes?.order_items?.[0]?.product_id
+            );
 
         if (!email || !eventName || !productId) {
             return NextResponse.json({ error: "Invalid webhook payload" }, { status: 400 });
         }
+        console.log('productId===')
+        console.log(productId)
+        console.log('EventName===')
+        console.log(eventName)
+        console.log('status===')
+        console.log(status)
 
         if ((eventName === "order_created" || eventName === "order_paid") && status === "paid") {
             const productCreditMap: Record<string, number> = {
-                "12345": 5,
-                "12346": 10,
-                "12347": 15,
-                "12348": 20,
+                "666670": 5,
+                "666661": 10,
+                "666673": 15,
+                "666675": 20,
             };
+            console.log('productCreditMap===')
+            console.log(productCreditMap)
 
             const creditsToAdd = productCreditMap[productId];
-
+            console.log('creditsToaDD==')
+            console.log(creditsToAdd)
             if (creditsToAdd) {
-                await db.update(usersTable)
-                    .set({ credits: sql`${usersTable.credits} + ${creditsToAdd}` })
-                    .where(eq(usersTable.email, email))
-                    .execute();
-                console.log(`✅ Добавлено ${creditsToAdd} кредитов пользователю ${email}`);
+                const user = await db.select().from(usersTable).where(eq(usersTable.email, email)).limit(1);
+                if (!user[0]) {
+                    console.warn(`Пользователь с email ${email} не найден`);
+                } else {
+                    const newCredits = (user[0].credits || 0) + creditsToAdd;
+                    await db.update(usersTable)
+                        .set({ credits: newCredits })
+                        .where(eq(usersTable.email, email))
+                        .execute();
+                    console.log(`✅ Добавлено ${creditsToAdd} кредитов пользователю ${email}, теперь у него ${newCredits}`);
+                }
             } else {
                 console.warn(`⚠️ Неизвестный product_id: ${productId}`);
             }

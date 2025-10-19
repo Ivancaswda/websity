@@ -4,13 +4,13 @@ import React from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
-import { Coins } from "lucide-react";
+import {Coins, Stars} from "lucide-react";
 
 const creditOptions = [
-    { credits: 5, price: 50, variantId: "12345", redirect: () => window.location.href = "https://websity.lemonsqueezy.com/buy/ccd6d1b8-3669-42db-a664-5fc60d0d8d9e" },
-    { credits: 10, price: 90, variantId: "12346", redirect: () => window.location.href = "https://websity.lemonsqueezy.com/buy/ccd6d1b8-3669-42db-a664-5fc60d0d8d9e" },
-    { credits: 15, price: 130, variantId: "12347", redirect: () => window.location.href = "https://websity.lemonsqueezy.com/buy/ccd6d1b8-3669-42db-a664-5fc60d0d8d9e" },
-    { credits: 20, price: 160, variantId: "12348", redirect: () => window.location.href = "https://websity.lemonsqueezy.com/buy/ccd6d1b8-3669-42db-a664-5fc60d0d8d9e" },
+    { credits: 5, price: 500, variantId: "12345", redirect: () => window.location.href = "https://websity.lemonsqueezy.com/buy/961db7ee-80a9-4e30-8bed-3259ad456476" },
+    { credits: 10, price: 900, variantId: "12346", redirect: () => window.location.href = "https://websity.lemonsqueezy.com/buy/655f7132-2f94-425f-9989-4449ee74f84c" },
+    { credits: 15, price: 1300, variantId: "12347", redirect: () => window.location.href = "https://websity.lemonsqueezy.com/buy/3d75fc02-c9f4-4bb1-bcf4-a8062893dbb1" },
+    { credits: 20, price: 1600, variantId: "12348", redirect: () => window.location.href = "https://websity.lemonsqueezy.com/buy/122afb0b-1501-4e75-9826-b983708e2595" },
 ];
 
 export default function PricingPage() {
@@ -21,8 +21,8 @@ export default function PricingPage() {
                     Выберите свой <span className="text-primary">план</span>
                 </h1>
                 <p className="text-gray-500 text-lg max-w-2xl mx-auto">
-                    Покупайте кредиты для создания сайтов с помощью Websity.
-                    Больше кредитов — выгоднее!
+                    Покупайте звезды для создания сайтов с помощью Websity.
+                    Больше звезд — выгоднее!
                 </p>
             </div>
 
@@ -38,11 +38,11 @@ export default function PricingPage() {
                         <Card className="border-2 border-transparent hover:border-primary transition-all duration-300 shadow-md hover:shadow-xl rounded-2xl">
                             <CardHeader className="text-center">
                                 <CardTitle className="text-xl font-semibold flex items-center justify-center gap-2 text-gray-900">
-                                    <Coins className="text-primary" /> {plan.credits} Кредитов
+                                    <Stars className="text-primary" /> {plan.credits} звезд
                                 </CardTitle>
                             </CardHeader>
-                            <CardContent className="flex flex-col items-center gap-4">
-                                <p className="text-4xl font-bold text-gray-900">{plan.price} Рублей</p>
+                            <CardContent className="flex flex-col items-center gap-2">
+                                <p className="text-4xl font-bold text-gray-900">{plan.price} Руб</p>
                                 <p className="text-gray-500 text-sm">
                                     {plan.credits * 10} генераций контента
                                 </p>
