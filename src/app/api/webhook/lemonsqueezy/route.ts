@@ -4,10 +4,7 @@ import { usersTable } from "@/config/schema";
 import { eq, sql } from "drizzle-orm";
 
 export async function POST(req: NextRequest) {
-    const token = req.headers.get("x-webhook-token");
-    if (token !== process.env.LEMONSQUEEZY_WEBHOOK_TOKEN) {
-        return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
+
 
     let event;
     try {
