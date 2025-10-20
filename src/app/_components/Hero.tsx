@@ -12,13 +12,15 @@ import axios from "axios"
 import { toast } from "sonner"
 import { v4 as uuidv4 } from "uuid"
 import { useRouter } from "next/navigation"
+import { motion } from "framer-motion"
 
 import {
     Popover,
     PopoverContent,
     PopoverTrigger
 } from "@/components/ui/popover"
-import {useAuth} from "@/context/useAuth";
+import { useAuth } from "@/context/useAuth"
+import { TextGenerateEffect } from "@/components/ui/text-generate-effect"
 
 const formSchema = z.object({
     value: z.string().min(1, { message: 'value is required' }).max(10000, { message: 'Value is too long' }),
@@ -29,14 +31,13 @@ const Hero = () => {
     const [isPending, setIsPending] = useState(false)
     const [userInput, setUserInput] = useState('')
     const [showNoCredits, setShowNoCredits] = useState(false)
-    const {user} = useAuth()
+    const { user } = useAuth()
     const router = useRouter()
 
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: { value: "" },
     })
-
 
     const onSelect = (value: string) => {
         setUserInput(value)
@@ -52,9 +53,6 @@ const Hero = () => {
         setIsPending(true)
 
         try {
-
-
-
             if (user?.credits <= 0) {
                 setShowNoCredits(true)
                 setIsPending(false)
@@ -81,13 +79,25 @@ const Hero = () => {
     }
 
     return (
-        <section className="space-y-6 py-[16vh] 2xl:py-48 mx-auto">
-            <h1 className="text-2xl md:text-5xl font-bold text-center">
-                Сайты стало создавать проще с помощью <span className="text-primary">Websity</span>
-            </h1>
-            <p className="text-lg md:text-xl text-muted-foreground text-center">
-                Проектируйте сайты за секунды, используя новейшие технологии ИИ
-            </p>
+        <section className="space-y-8 py-[16vh] 2xl:py-48 mx-auto">
+
+            <div className="text-center max-w-4xl mx-auto">
+                <TextGenerateEffect
+                    words="Создавать сайты стало проще с помощью Websity"
+                    className="text-4xl md:text-5xl font-bold"
+                    duration={0.4}
+                    highlightWord="Websity"
+                />
+
+                <motion.p
+                    className="text-lg md:text-xl text-muted-foreground mt-4"
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.8, delay: 1.8 }}
+                >
+                    Проектируйте сайты за секунды, используя новейшие технологии ИИ
+                </motion.p>
+            </div>
 
             <div className="max-w-3xl mx-auto w-full">
                 <Form {...form}>
@@ -138,30 +148,30 @@ const Hero = () => {
                                 </div>
 
                                 <Popover open={showNoCredits} onOpenChange={setShowNoCredits}>
-
-                                    <Button
-                                        type="submit"
-                                        onClick={(e) => {
-                                            e.preventDefault();
-                                            if (user?.credits <= 0) {
-                                                // Только если нет кредитов — показать поповер
-                                                setShowNoCredits(true);
-                                            } else {
-                                                createNewProject();
-                                            }
-                                        }}
-                                        disabled={isPending}
-                                        className={cn('size-8 rounded-full', isPending && 'bg-muted-foreground border')}
-                                    >
-                                        {isPending ? <Loader2Icon className="size-4 animate-spin" /> : <ArrowUpIcon />}
-                                    </Button>
+                                    <PopoverTrigger asChild>
+                                        <Button
+                                            type="submit"
+                                            onClick={(e) => {
+                                                e.preventDefault();
+                                                if (user?.credits <= 0) {
+                                                    setShowNoCredits(true);
+                                                } else {
+                                                    createNewProject();
+                                                }
+                                            }}
+                                            disabled={isPending}
+                                            className={cn('size-8 rounded-full', isPending && 'bg-muted-foreground border')}
+                                        >
+                                            {isPending ? <Loader2Icon className="size-4 animate-spin" /> : <ArrowUpIcon />}
+                                        </Button>
+                                    </PopoverTrigger>
 
                                     <PopoverContent className="w-64">
                                         <p className="text-sm text-center text-red-600 mb-2">
-                                            Недостаточно звезд для создания проекта!
+                                            Недостаточно звёзд для создания проекта!
                                         </p>
                                         <Button className="w-full" onClick={() => router.push('/pricing')}>
-                                            Купить звезды
+                                            Купить звёзды
                                         </Button>
                                     </PopoverContent>
                                 </Popover>
@@ -170,9 +180,9 @@ const Hero = () => {
 
                         <div className="flex-wrap justify-center gap-2 hidden md:flex max-w-3xl">
                             {[
-                                'Создай Лэндинговую страницу для любого стартапа',
+                                'Создай лэндинговую страницу для стартапа',
                                 'Сгенерируй калькулятор приложение',
-                                'Сделай крутое портфолио для начинающего разработчика'
+                                'Сделай портфолио разработчика за 1 минуту'
                             ].map((template, index) => (
                                 <Button
                                     key={index}
